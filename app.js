@@ -9,6 +9,7 @@ const usersRoutes = require("./routes/users-routes");
 const HttpError = require("./models/http-error");
 
 const app = express();
+const port = 5000;
 
 app.use(bodyParser.json());
 app.use('/uploads/images', express.static(path.join('uploads', 'images')));
@@ -21,7 +22,7 @@ app.use((req, res, next) => {
 })
 
 app.get('/', (req, res) => {
-	res.send('hello world')
+	res.json({ message: 'Hello from Express on Vercel!' });
 });
 
 app.use("/api/places", placesRoutes);
@@ -49,10 +50,12 @@ mongoose
     `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASSWORD}@cluster0.wq74gol.mongodb.net/${process.env.DB_NAME}?retryWrites=true&w=majority&appName=Cluster0`,
   )
   .then(() => {
-    app.listen(5000);
+    app.listen(port, () => {
+	    console.log(`Example app listening on port ${port}`);
+    });
   })
   .catch((err) => console.log(err));
 
 // module.exports = app;
 // module.exports.handler = serverless(app);
-export default app;
+// export default app;
