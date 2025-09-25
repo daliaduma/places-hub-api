@@ -2,7 +2,7 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
 const fs =  require("fs");
-const serverless = require("serverless-http");
+// const serverless = require("serverless-http");
 const path = require("path");
 const placesRoutes = require("./routes/places-routes");
 const usersRoutes = require("./routes/users-routes");
@@ -53,5 +53,6 @@ mongoose
   })
   .catch((err) => console.log(err));
 
-module.exports = app;
-module.exports.handler = serverless(app);
+// module.exports = app;
+// module.exports.handler = serverless(app);
+export default app;
