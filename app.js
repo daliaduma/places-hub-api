@@ -1,8 +1,9 @@
 const express = require("express");
+// import express from "express";
 const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
 const fs =  require("fs");
-// const serverless = require("serverless-http");
+const serverless = require("serverless-http");
 const path = require("path");
 const placesRoutes = require("./routes/places-routes");
 const usersRoutes = require("./routes/users-routes");
@@ -50,12 +51,12 @@ mongoose
     `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASSWORD}@cluster0.wq74gol.mongodb.net/${process.env.DB_NAME}?retryWrites=true&w=majority&appName=Cluster0`,
   )
   .then(() => {
-    app.listen(port, () => {
-	    console.log(`Example app listening on port ${port}`);
-    });
+    // app.listen(port, () => {
+	  //   console.log(`Example app listening on port ${port}`);
+    // });
   })
   .catch((err) => console.log(err));
 
 // module.exports = app;
-// module.exports.handler = serverless(app);
-// export default app;
+module.exports.handler = serverless(app);
+export default app;
