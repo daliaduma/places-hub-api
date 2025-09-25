@@ -41,7 +41,7 @@ app.use((error, req, res, next) => {
 });
 mongoose
   .connect(
-    "mongodb+srv://daliaduma97_db_user:c83DScOJD9zIPykt@cluster0.wq74gol.mongodb.net/places?retryWrites=true&w=majority&appName=Cluster0",
+    `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASSWORD}@cluster0.wq74gol.mongodb.net/${process.env.DB_NAME}?retryWrites=true&w=majority&appName=Cluster0`,
   )
   .then(() => {
     app.listen(5000);
