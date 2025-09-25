@@ -1,10 +1,10 @@
-const mongoose = require("mongoose");
-const fs = require("fs");
-const HttpError = require("../models/http-error");
-const { validationResult } = require("express-validator");
-const getCoordsForAddress = require("../util/location");
-const Place = require("../models/place");
-const User = require("../models/user");
+import mongoose from "mongoose";
+import * as fs from "node:fs";
+import {validationResult} from "express-validator";
+import getCoordsForAddress from "../util/location.js";
+import HttpError from "../models/http-error.js";
+import Place from "../models/place.js";
+import User from "../models/user.js";
 
 const getPlaceById = async (req, res, next) => {
   const placeId = req.params.pid;
@@ -208,8 +208,11 @@ const deletePlace = async (req, res, next) => {
   res.status(200).json({ message: "Deleted place." });
 };
 
-exports.getPlaceById = getPlaceById;
-exports.getPlacesByUserId = getPlacesByUserId;
-exports.createPlace = createPlace;
-exports.updatePlace = updatePlace;
-exports.deletePlace = deletePlace;
+
+export default {
+	getPlaceById,
+	getPlacesByUserId,
+	createPlace,
+	updatePlace,
+	deletePlace,
+}

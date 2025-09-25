@@ -1,5 +1,5 @@
-const axios = require("axios");
-const HttpError = require("../models/http-error");
+import axios from "axios";
+import HttpError from "../models/http-error.js";
 
 const API_KEY = process.env.GOOGLE_API_KEY;
 const getCoordsForAddress = async (address) => {
@@ -16,4 +16,4 @@ const getCoordsForAddress = async (address) => {
   return coordinates;
 };
 
-module.exports = getCoordsForAddress;
+export default getCoordsForAddress;

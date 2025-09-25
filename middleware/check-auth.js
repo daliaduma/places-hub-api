@@ -1,7 +1,7 @@
-const jwt = require('jsonwebtoken');
-const HttpError = require('../models/http-error');
+import jwt from "jsonwebtoken";
+import HttpError from "../models/http-error.js";
 
-module.exports = (req, res, next) => {
+export default (req, res, next) => {
 	if (req.method === 'OPTIONS') {
 		return next();
 	}
@@ -18,5 +18,4 @@ module.exports = (req, res, next) => {
 			const error = new HttpError("Authentication failed", 403);
 			return next(error);
 	}
-
  }

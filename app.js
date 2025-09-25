@@ -1,13 +1,19 @@
-const express = require("express");
-// import express from "express";
-const bodyParser = require("body-parser");
-const mongoose = require("mongoose");
-const fs =  require("fs");
-const serverless = require("serverless-http");
-const path = require("path");
-const placesRoutes = require("./routes/places-routes");
-const usersRoutes = require("./routes/users-routes");
-const HttpError = require("./models/http-error");
+import express from "express";
+import * as path from "node:path";
+import bodyParser from "body-parser";
+import mongoose from "mongoose";
+import fs from "node:fs";
+import placesRoutes from "./routes/places-routes.js";
+import usersRoutes from "./routes/users-routes.js";
+import HttpError from "./models/http-error.js";
+// const mongoose = require("mongoose");
+// const fs =  require("fs");
+// const serverless = require("serverless-http");
+// const path = require("path");
+// import path  from "path";
+// const placesRoutes = require("./routes/places-routes");
+// const usersRoutes = require("./routes/users-routes");
+// const HttpError = require("./models/http-error");
 
 const app = express();
 const port = 5000;
@@ -58,5 +64,5 @@ mongoose
   .catch((err) => console.log(err));
 
 // module.exports = app;
-module.exports.handler = serverless(app);
+// module.exports.handler = serverless(app);
 export default app;
