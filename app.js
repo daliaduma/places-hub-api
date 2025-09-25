@@ -49,7 +49,7 @@ mongoose
     `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASSWORD}@cluster0.wq74gol.mongodb.net/${process.env.DB_NAME}?retryWrites=true&w=majority&appName=Cluster0`,
   )
   .then(() => {
-    // app.listen(5000);
+    app.listen(5000);
   })
   .catch((err) => console.log(err));
 
