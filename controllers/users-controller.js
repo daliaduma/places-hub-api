@@ -3,6 +3,8 @@ import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import User from "../models/user.js";
 import {validationResult} from "express-validator";
+import fs from "node:fs";
+import {S3} from "@aws-sdk/client-s3";
 
 const getUsers = async (req, res, next) => {
   let users;
@@ -54,15 +56,42 @@ const signup = async (req, res, next) => {
 		return next(error);
 	}
 
+	const extension = req.file.filename.split(".").pop();
+	const fileName = `${new Date().getTime()}.${extension}`;
+
+	const bufferedImage= await fs.readFileSync(req.file.path);
+
+	const s3 = new S3({
+		region: "eu-north-1",
+		credentials: {
+			secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+			accessKeyId: process.env.AWS_ACCESS_KEY
+		}
+	});
+
+	try {
+		await s3.putObject({
+			Bucket: process.env.AWS_BUCKET_NAME,
+			Key: fileName,
+			Body: bufferedImage,
+			ContentType: req.file.mimetype,
+		});
+	} catch (err) {
+		const error = new HttpError("Could not upload image", 500);
+		return next(error);
+	}
+
   const createdUser = new User({
     name,
     email,
-    image: req.file.path,
+    image: fileName,
 	  password: hashedPassword,
     places: [],
   });
 
-  try {
+	await fs.unlinkSync(req.file.path);
+
+	try {
     await createdUser.save();
   } catch (err) {
     const error = new HttpError(

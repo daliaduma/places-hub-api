@@ -1,10 +1,11 @@
 import mongoose from "mongoose";
-import * as fs from "node:fs";
+import fs from "node:fs";
 import {validationResult} from "express-validator";
 import getCoordsForAddress from "../util/location.js";
 import HttpError from "../models/http-error.js";
 import Place from "../models/place.js";
 import User from "../models/user.js";
+import {S3} from "@aws-sdk/client-s3";
 
 const getPlaceById = async (req, res, next) => {
   const placeId = req.params.pid;
@@ -70,14 +71,42 @@ const createPlace = async (req, res, next) => {
   } catch (error) {
     return next(error);
   }
+
+	const extension = req.file.filename.split(".").pop();
+	const fileName = `${new Date().getTime()}.${extension}`;
+
+	const bufferedImage= await fs.readFileSync(req.file.path);
+
+	const s3 = new S3({
+		region: "eu-north-1",
+		credentials: {
+			secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+			accessKeyId: process.env.AWS_ACCESS_KEY
+		}
+	});
+
+	try {
+		await s3.putObject({
+			Bucket: process.env.AWS_BUCKET_NAME,
+			Key: fileName,
+			Body: bufferedImage,
+			ContentType: req.file.mimetype,
+		});
+	} catch (err) {
+		const error = new HttpError("Could not upload image", 500);
+		return next(error);
+	}
+
   const createdPlace = new Place({
     title,
     description,
     address,
     location: coordinates,
-    image: req.file.path,
+    image: fileName,
 	  creator: req.userData.userId,
   });
+
+	await fs.unlinkSync(req.file.path);
 
   let user;
   try {

@@ -6,14 +6,6 @@ import fs from "node:fs";
 import placesRoutes from "./routes/places-routes.js";
 import usersRoutes from "./routes/users-routes.js";
 import HttpError from "./models/http-error.js";
-// const mongoose = require("mongoose");
-// const fs =  require("fs");
-// const serverless = require("serverless-http");
-// const path = require("path");
-// import path  from "path";
-// const placesRoutes = require("./routes/places-routes");
-// const usersRoutes = require("./routes/users-routes");
-// const HttpError = require("./models/http-error");
 
 const app = express();
 const port = 5000;
@@ -57,12 +49,10 @@ mongoose
     `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASSWORD}@cluster0.wq74gol.mongodb.net/${process.env.DB_NAME}?retryWrites=true&w=majority&appName=Cluster0`,
   )
   .then(() => {
-    // app.listen(port, () => {
-	  //   console.log(`Example app listening on port ${port}`);
-    // });
+    app.listen(port, () => {
+	    console.log(`App listening to port ${port}`);
+    });
   })
   .catch((err) => console.log(err));
 
-// module.exports = app;
-// module.exports.handler = serverless(app);
 export default app;
