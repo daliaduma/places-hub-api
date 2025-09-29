@@ -83,32 +83,32 @@ const createPlace = async (req, res, next) => {
 		return next(error);
 	}
 
-	const s3 = new S3({
-		region: "eu-north-1",
-		credentials: {
-			secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
-			accessKeyId: process.env.AWS_ACCESS_KEY
-		}
-	});
-
-	try {
-		await s3.putObject({
-			Bucket: process.env.AWS_BUCKET_NAME,
-			Key: fileName,
-			Body: bufferedImage,
-			ContentType: req.file.mimetype,
-		});
-	} catch (err) {
-		const error = new HttpError("Could not upload image", 500);
-		return next(error);
-	}
+	// const s3 = new S3({
+	// 	region: "eu-north-1",
+	// 	credentials: {
+	// 		secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+	// 		accessKeyId: process.env.AWS_ACCESS_KEY
+	// 	}
+	// });
+	//
+	// try {
+	// 	await s3.putObject({
+	// 		Bucket: process.env.AWS_BUCKET_NAME,
+	// 		Key: fileName,
+	// 		Body: bufferedImage,
+	// 		ContentType: req.file.mimetype,
+	// 	});
+	// } catch (err) {
+	// 	const error = new HttpError("Could not upload image", 500);
+	// 	return next(error);
+	// }
 
   const createdPlace = new Place({
     title,
     description,
     address,
     location: coordinates,
-    image: fileName,
+    image: "",
 	  creator: req.userData.userId,
   });
 
