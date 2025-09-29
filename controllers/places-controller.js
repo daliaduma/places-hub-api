@@ -82,7 +82,7 @@ const createPlace = async (req, res, next) => {
 		const error = new HttpError("Could not upload image", 500);
 		return next(error);
 	}
-	
+
 	const s3 = new S3({
 		region: "eu-north-1",
 		credentials: {
@@ -112,7 +112,7 @@ const createPlace = async (req, res, next) => {
 	  creator: req.userData.userId,
   });
 
-	await fs.unlinkSync(req.file.path);
+	// await fs.unlinkSync(req.file.path);
 
   let user;
   try {
