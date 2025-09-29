@@ -68,8 +68,9 @@ const createPlace = async (req, res, next) => {
   let coordinates;
   try {
     coordinates = await getCoordsForAddress(address);
-  } catch (error) {
-    return next(error);
+  } catch (err) {
+	  const error = new HttpError("Could not get credentials", 500);
+	  return next(error);
   }
 
 	const extension = req.file.filename.split(".").pop();
@@ -77,6 +78,11 @@ const createPlace = async (req, res, next) => {
 
 	const bufferedImage= await fs.readFileSync(req.file.path);
 
+	if (!bufferedImage) {
+		const error = new HttpError("Could not upload image", 500);
+		return next(error);
+	}
+	
 	const s3 = new S3({
 		region: "eu-north-1",
 		credentials: {
