@@ -5,7 +5,6 @@ import getCoordsForAddress from "../util/location.js";
 import HttpError from "../models/http-error.js";
 import Place from "../models/place.js";
 import User from "../models/user.js";
-import {S3} from "@aws-sdk/client-s3";
 
 const getPlaceById = async (req, res, next) => {
   const placeId = req.params.pid;
@@ -63,56 +62,24 @@ const createPlace = async (req, res, next) => {
       new HttpError("Invalid inputs passed, please check your data", 422),
     );
   }
-  const { title, description, address } = req.body;
+  const { title, description, address, image } = req.body;
 
   let coordinates;
   try {
     coordinates = await getCoordsForAddress(address);
   } catch (err) {
-	  const error = new HttpError("Could not get credentials", 500);
+	  const error = new HttpError("Could not get coordinates", 500);
 	  return next(error);
   }
-
-	const extension = req.file.filename.split(".").pop();
-	const fileName = `${new Date().getTime()}.${extension}`;
-
-	const bufferedImage= await fs.readFileSync(req.file.path);
-
-	if (!bufferedImage) {
-		const error = new HttpError("Could not upload image", 500);
-		return next(error);
-	}
-
-	// const s3 = new S3({
-	// 	region: "eu-north-1",
-	// 	credentials: {
-	// 		secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
-	// 		accessKeyId: process.env.AWS_ACCESS_KEY
-	// 	}
-	// });
-	//
-	// try {
-	// 	await s3.putObject({
-	// 		Bucket: process.env.AWS_BUCKET_NAME,
-	// 		Key: fileName,
-	// 		Body: bufferedImage,
-	// 		ContentType: req.file.mimetype,
-	// 	});
-	// } catch (err) {
-	// 	const error = new HttpError("Could not upload image", 500);
-	// 	return next(error);
-	// }
 
   const createdPlace = new Place({
     title,
     description,
     address,
     location: coordinates,
-    image: "",
+    image,
 	  creator: req.userData.userId,
   });
-
-	// await fs.unlinkSync(req.file.path);
 
   let user;
   try {

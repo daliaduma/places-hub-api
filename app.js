@@ -2,9 +2,9 @@ import express from "express";
 import * as path from "node:path";
 import bodyParser from "body-parser";
 import mongoose from "mongoose";
-import fs from "node:fs";
 import placesRoutes from "./routes/places-routes.js";
 import usersRoutes from "./routes/users-routes.js";
+import uploadRoutes from "./routes/upload-routes.js";
 import HttpError from "./models/http-error.js";
 
 const app = express();
@@ -24,6 +24,7 @@ app.get('/', (req, res) => {
 	res.json({ message: 'Hello from Express on Vercel!' });
 });
 
+app.use('/api/upload', uploadRoutes)
 app.use("/api/places", placesRoutes);
 app.use("/api/users", usersRoutes);
 
@@ -33,11 +34,6 @@ app.use((req, res, next) => {
 });
 
 app.use((error, req, res, next) => {
-  if (req.file) {
-		fs.unlink(req.file.path, (err) => {
-			console.log(err);
-		});
-  }
 	if (res.headersSent) {
     return next(error);
   }
