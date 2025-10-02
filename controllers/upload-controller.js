@@ -12,7 +12,7 @@ const upload = async (req, res, next) => {
 	}
 
 	const s3 = new S3({
-		region: "eu-north-1",
+		region: process.env.AWS_BUCKET_REGION,
 		credentials: {
 			secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
 			accessKeyId: process.env.AWS_ACCESS_KEY
@@ -30,10 +30,10 @@ const upload = async (req, res, next) => {
 			ContentType: req.file.mimetype,
 		});
 	} catch (err) {
-		const error = new HttpError("Could not upload image", 500);
-		return next (error);
+		const error = new HttpError(err.message, 500);
+		return next(error);
 	}
-	res.status (201).json({url: process.env.FILE_UPLOAD_ASSET_URL + '/' +fileName});
+	res.status(201).json({url: process.env.FILE_UPLOAD_ASSET_URL + '/' +fileName});
 }
 
 export default {

@@ -22,13 +22,14 @@ const getUsers = async (req, res, next) => {
 
 const signup = async (req, res, next) => {
   const errors = validationResult(req);
+	console.log(errors);
   if (!errors.isEmpty()) {
     return next(
       new HttpError("Invalid inputs passed, please check your data", 422),
     );
   }
-  const { name, email, password } = req.body;
-
+  const { name, email, password, image } = req.body;
+	console.log(req.body);
   let existingUser;
   try {
     existingUser = await User.findOne({ email });
@@ -56,40 +57,13 @@ const signup = async (req, res, next) => {
 		return next(error);
 	}
 
-	const extension = req.file.filename.split(".").pop();
-	const fileName = `${new Date().getTime()}.${extension}`;
-
-	const bufferedImage= await fs.readFileSync(req.file.path);
-
-	const s3 = new S3({
-		region: "eu-north-1",
-		credentials: {
-			secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
-			accessKeyId: process.env.AWS_ACCESS_KEY
-		}
-	});
-
-	try {
-		await s3.putObject({
-			Bucket: process.env.AWS_BUCKET_NAME,
-			Key: fileName,
-			Body: bufferedImage,
-			ContentType: req.file.mimetype,
-		});
-	} catch (err) {
-		const error = new HttpError("Could not upload image", 500);
-		return next(error);
-	}
-
   const createdUser = new User({
     name,
     email,
-    image: fileName,
+    image,
 	  password: hashedPassword,
     places: [],
   });
-
-	await fs.unlinkSync(req.file.path);
 
 	try {
     await createdUser.save();
@@ -182,10 +156,6 @@ const login = async (req, res, next) => {
 	  token
   });
 };
-
-// exports.getUsers = getUsers;
-// exports.signup = signup;
-// exports.login = login;
 
 export default {
 	getUsers,
