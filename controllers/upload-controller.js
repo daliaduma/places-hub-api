@@ -33,7 +33,7 @@ const upload = async (req, res, next) => {
 		const error = new HttpError(err.message, 500);
 		return next(error);
 	}
-	res.status(201).json({url: process.env.FILE_UPLOAD_ASSET_URL + '/' +fileName});
+	res.status(201).json({url: fileName});
 }
 
 export default {
